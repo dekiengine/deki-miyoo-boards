@@ -8,6 +8,8 @@ Build target for the Miyoo Mini running [Onion OS](https://onionui.github.io). I
 
 The screen is ARGB8888, the panel's own format: gradients show without RGB565's banding, and a present is a plain scaled copy. Measured on a Miyoo Mini, a 6k-triangle 3D scene ran as fast as in RGB565 or faster (the copy no longer converts each pixel, which leaves the CPU to the 3D). The platform also gives deki-3d's software rasteriser 64-pixel tiles (`DEKI_3D_TILE_SIZE=64` in `miyoo_mini.json`), for a scene that leaves its tile size to the platform: on the Miyoo Mini they beat 32 (a 6k-triangle scene from 52.8 to 56.6 frames a second in RGB565, from 58.0 to 59.7 in ARGB8888).
 
+> **Not in the Package Manager yet.** It needs engine and editor changes that come with the next Deki release after 0.22: the display's refresh pacing and frame count (`IDisplay::SetRefreshesPerFrame`, `IDisplay::GetFramesShown`), `deki/Neon.h`, and the editor's shared CMake generator for games built as one program. It is listed in the registry with that release.
+
 [Deki](https://dekiengine.com) is a modular C++ engine for embedded systems and desktop, with a visual editor. Every capability is a package, and a handheld is one too: this package has the handheld's display and input, and the builder that makes and installs the app.
 
 ## Install
