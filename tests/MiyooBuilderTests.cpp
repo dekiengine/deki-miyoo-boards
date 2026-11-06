@@ -668,3 +668,18 @@ TEST_F(MiyooBuildFilesTest, APackageWithItsOwnMainStopsTheBuildNamingIt)
     builder.SetBuildOptions({});
     EXPECT_FALSE(builder.GenerateBuildFiles(m_Dir.Path().string(), MiyooMini(), { "DEKI_PACKAGE_MIYOO" }));
 }
+
+// A game built as a program shuts its packages down when it quits, freeing
+// their memory (the render system, its passes, the 3D rasteriser's working
+// memory), so the engine's leak check at shutdown finds nothing of theirs.
+// The build leaves the engine's empty stub out, and its own init file
+// defines the shutdown.
+TEST_F(MiyooBuildFilesTest, TheGameShutsItsPackagesDownWhenItQuits)
+{
+    const std::string cmake = Generate(MiyooMini(), { "DEKI_PACKAGE_MIYOO" });
+    EXPECT_TRUE(Contains(cmake, "set(DEKI_GAME_DEFINES_PACKAGE_SYSTEMS ON)\nadd_subdirectory("));
+    const std::string init =
+        Read(MiyooBuilder::BuildDirectoryFor(m_Dir.Path().string(), MiyooMini().id) / "deki_package_init.gen.cpp");
+    EXPECT_TRUE(Contains(init, "extern \"C\" void DekiInitPackageSystems(void)"));
+    EXPECT_TRUE(Contains(init, "extern \"C\" void DekiShutdownPackageSystems(void)"));
+}
