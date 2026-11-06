@@ -1,6 +1,6 @@
 #include "MiyooBuilder.h"
 
-#include "OnionApp.h"
+#include "MainUiApp.h"
 
 #include <deki-editor/EditorPaths.h>
 #include <deki-editor/EditorSettings.h>
@@ -286,7 +286,7 @@ std::vector<std::pair<std::string, std::string>> MiyooBuilder::DescribePlatform(
     rows.push_back({ "Toolchain", config.Option("toolchainPrefix") + " (Arm GNU " + kMiyooCompilerVersion + ")" });
     rows.push_back({ "CPU", config.Option("cpuFlags") });
     rows.push_back({ "Linking", config.OptionBool("static") ? "static" : "dynamic" });
-    rows.push_back({ "Output", "Onion OS app" });
+    rows.push_back({ "Output", "MainUI app (stock or Onion)" });
     return rows;
 }
 
@@ -526,8 +526,8 @@ void MiyooBuilder::DoBuild(const std::string& projectPath, BuildOutputCallback o
         return;
     }
 
-    // The Onion app, from the build and the boot payload the editor exported.
-    Report(BuildState::Building, "Packing the Onion app...", 0.95f, progress);
+    // The MainUI app, from the build and the boot payload the editor exported.
+    Report(BuildState::Building, "Packing the MainUI app...", 0.95f, progress);
     std::string iconDir;
     for (const auto& pkg : CMakeGen::ScanPackageManifests(projectPath))
     {
@@ -536,22 +536,22 @@ void MiyooBuilder::DoBuild(const std::string& projectPath, BuildOutputCallback o
             iconDir = (fs::path(GetPackagesDirectory(projectPath)) / pkg.dirName).string();
         }
     }
-    OnionAppSources sources;
+    MainUiAppSources sources;
     sources.executable = executable;
     sources.payload = GetBootPayloadDirectory(projectPath);
-    sources.icon = fs::path(iconDir) / "resources" / "onion" / "icon.png";
+    sources.icon = fs::path(iconDir) / "resources" / "mainui" / "icon.png";
     sources.label = ProjectName(projectPath);
-    sources.folder = OnionAppFolderName(sources.label);
+    sources.folder = MainUiAppFolderName(sources.label);
     std::string error;
-    if (iconDir.empty() || !AssembleOnionApp(sources, fs::path(buildDir) / "App", error))
+    if (iconDir.empty() || !AssembleMainUiApp(sources, fs::path(buildDir) / "App", error))
     {
-        Fail("Could not pack the Onion app: " + (iconDir.empty() ? "deki-miyoo-boards is not installed" : error), out,
+        Fail("Could not pack the MainUI app: " + (iconDir.empty() ? "deki-miyoo-boards is not installed" : error), out,
              progress);
         return;
     }
     if (out)
     {
-        out("Onion app: " + (fs::path(buildDir) / "App" / sources.folder).generic_string(), false);
+        out("MainUI app: " + (fs::path(buildDir) / "App" / sources.folder).generic_string(), false);
         out("Install puts it on the SD card; or copy App/" + sources.folder + " into App/ on the card yourself.",
             false);
     }
@@ -590,7 +590,7 @@ void MiyooBuilder::DoClean(const std::string& projectPath, BuildOutputCallback o
 
 std::vector<DeployTarget> MiyooBuilder::EnumerateDeployTargets() const
 {
-    return FindOnionCards();
+    return FindMiyooCards();
 }
 
 void MiyooBuilder::Deploy(const std::string& projectPath, const std::string& deployTargetId,
@@ -598,7 +598,7 @@ void MiyooBuilder::Deploy(const std::string& projectPath, const std::string& dep
 {
     // Only a card that is listed: an id from somewhere else could name any
     // folder, and an install deletes the app it replaces.
-    const std::vector<DeployTarget> cards = FindOnionCards();
+    const std::vector<DeployTarget> cards = FindMiyooCards();
     std::string cardId = deployTargetId;
     std::string problem;
     if (cardId.empty())
@@ -609,12 +609,12 @@ void MiyooBuilder::Deploy(const std::string& projectPath, const std::string& dep
         }
         else if (cards.empty())
         {
-            problem = "No Onion SD card found. Put the Miyoo's SD card in a card reader (or connect the Miyoo over "
-                      "USB as a drive) and try again; a card with Onion has .tmp_update/ and App/ at its top.";
+            problem = "No Miyoo SD card found. Put the Miyoo's SD card in a card reader (or connect the Miyoo over "
+                      "USB as a drive) and try again; a Miyoo card, stock or Onion, has App/ and Emu/ at its top.";
         }
         else
         {
-            problem = "More than one Onion SD card is connected; choose one:";
+            problem = "More than one Miyoo SD card is connected; choose one:";
             for (const auto& c : cards)
             {
                 problem += " " + c.id;
@@ -625,11 +625,11 @@ void MiyooBuilder::Deploy(const std::string& projectPath, const std::string& dep
     {
         // As the card is listed, however it was written ("E:\" is "E:").
         const auto card = std::find_if(cards.begin(), cards.end(),
-                                       [&](const DeployTarget& c) { return NamesOnionCard(cardId, c.id); });
+                                       [&](const DeployTarget& c) { return NamesMiyooCard(cardId, c.id); });
         if (card == cards.end())
         {
             problem =
-                "'" + cardId + "' is not a connected Onion SD card (a removable drive with .tmp_update/ and App/).";
+                "'" + cardId + "' is not a connected Miyoo SD card (a removable drive with App/ and Emu/).";
             if (!cards.empty())
             {
                 problem += " Connected:";
@@ -660,9 +660,9 @@ void MiyooBuilder::Deploy(const std::string& projectPath, const std::string& dep
 void MiyooBuilder::DoDeploy(const std::string& projectPath, const std::string& cardId, BuildOutputCallback out,
                             BuildProgressCallback progress)
 {
-    const std::string folder = OnionAppFolderName(ProjectName(projectPath));
+    const std::string folder = MainUiAppFolderName(ProjectName(projectPath));
     const fs::path app = fs::path(GetBuildDirectory(projectPath)) / "App" / folder;
-    const fs::path card = OnionCardRoot(cardId);
+    const fs::path card = MiyooCardRoot(cardId);
     Report(BuildState::Deploying, "Installing on " + cardId + "...", 0.0f, progress);
     if (out)
     {
@@ -670,7 +670,7 @@ void MiyooBuilder::DoDeploy(const std::string& projectPath, const std::string& c
     }
 
     std::string error;
-    const bool ok = InstallOnionApp(
+    const bool ok = InstallMainUiApp(
         app, card, folder, out, [&](float value, const std::string& text)
         { Report(BuildState::Deploying, text, value, progress); }, &m_CancelRequested, error);
     if (!ok)
@@ -682,7 +682,7 @@ void MiyooBuilder::DoDeploy(const std::string& projectPath, const std::string& c
     {
         out("Installed App/" + folder + " on " + cardId +
                 ". Eject the card safely before taking it out; the game "
-                "is in Onion's Apps.",
+                "is in the Miyoo's Apps.",
             false);
     }
     Report(BuildState::Completed, "Installed on " + cardId, 1.0f, progress);

@@ -7,7 +7,7 @@
   "defines": [
     "DEKI_3D_TILE_SIZE=64"
   ],
-  "displayName": "Miyoo Mini (Onion OS)",
+  "displayName": "Miyoo Mini",
   "family": "linux-arm",
   "framework": "miyoo",
   "frameworkOptions": {

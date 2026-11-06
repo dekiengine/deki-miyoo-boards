@@ -1,6 +1,8 @@
 # Deki Miyoo Boards
 
-Build target for the Miyoo Mini running [Onion OS](https://onionui.github.io). Install the package, pick **Miyoo Mini (Onion OS)** in the Build panel, and **Build** makes an Onion app; **Install** puts it on the Miyoo's SD card, where it shows in Onion's Apps.
+Build target for the Miyoo Mini. Install the package, pick **Miyoo Mini** in the Build panel, and **Build** makes a MainUI app; **Install** puts it on the Miyoo's SD card, where it shows in the Apps menu.
+
+MainUI is the Miyoo's menu. The stock firmware has it, and so does [Onion OS](https://onionui.github.io), which is built on it and keeps its card layout, so the same app installs on either. Tested on Onion; the stock firmware is expected to work the same way, but no one has run a game on it yet.
 
 | Target | Handheld | Screen | Input |
 | --- | --- | --- | --- |
@@ -36,7 +38,7 @@ The editor installs only the first; install the others yourself and restart the 
 
 The game builds like the desktop simulator, as one executable, then cross-compiled:
 
-- The toolchain file (`generated/build/miyoo_mini/toolchain.cmake`) comes from the platform's `frameworkOptions`: `toolchainPrefix` (the compiler), `cpuFlags` (ARMv7, Cortex-A7, NEON, hard float) and `static`. The game is linked statically, so it does not depend on the C library Onion has.
+- The toolchain file (`generated/build/miyoo_mini/toolchain.cmake`) comes from the platform's `frameworkOptions`: `toolchainPrefix` (the compiler), `cpuFlags` (ARMv7, Cortex-A7, NEON, hard float) and `static`. The game is linked statically, so it does not depend on the C library of the Miyoo's system.
 - Only the packages the game uses and the platform can build are compiled, so nothing written for SDL3, ESP32 or Bluetooth reaches the ARM compiler.
 - The platform's `cxxFlags` (`-O3`) are the optimisation, for the engine and the game alike; `linkFlags` has `-s`, which strips the symbols.
 - Logging follows the Build panel's logging options.
@@ -46,8 +48,8 @@ The app is then in `generated/build/miyoo_mini/App/<Folder>/`, named after the p
 | File | What it is |
 | --- | --- |
 | `DekiGame` | The game, a static ARM Linux executable |
-| `launch.sh` | What Onion runs: goes to the app's folder and starts the game, its output to `dekigame.out` beside it |
-| `config.json` | The label (the project's name), the icon and the launch script, for Onion's Apps |
+| `launch.sh` | What MainUI runs: goes to the app's folder and starts the game, its output to `dekigame.out` beside it |
+| `config.json` | The label (the project's name), the icon and the launch script, for MainUI's Apps menu |
 | `icon.png` | The Apps icon, the Deki cat |
 | `flash/` | The game's data: the project settings, the boot scene and the assets (`F:/` on the handheld) |
 | `.deki-app` | Says the editor made this folder, so a later Install may replace it |
@@ -56,7 +58,7 @@ The game also writes `dekigame.log` (its own log) and the files it saves into it
 
 ## Install
 
-**Install** copies the app to `App/<Folder>` on an SD card with Onion: put the card in a card reader, and the target list shows each removable drive with `.tmp_update/` and `App/` at its top. The copy goes to a hidden folder first and each file is read back and checked against the build before it replaces the old app, so a card pulled out halfway still has the old one. Eject the card before taking it out.
+**Install** copies the app to `App/<Folder>` on the Miyoo's SD card: put the card in a card reader, and the target list shows each removable drive with `App/` and `Emu/` at its top, and whether it has Onion (`.tmp_update/`) or the stock firmware. The copy goes to a hidden folder first and each file is read back and checked against the build before it replaces the old app, so a card pulled out halfway still has the old one. Eject the card before taking it out.
 
 Only `App/<Folder>` is ever replaced, and only when the editor made it. An app of the same name installed another way is left alone, and Install says so; rename the project, or move that folder off the card.
 
@@ -67,6 +69,6 @@ Without Install: copy `App/<Folder>` into `App/` on the card yourself.
 Boot order, as the boot scene lists it:
 
 1. Display: `MiyooDisplaySetup` opens `/dev/fb0`, scales the game's 320x240 by whole pixels to fill the panel and turns it 180 degrees (the panel is mounted upside down). Frames are presented on their own thread, in step with the panel's refresh. The game draws into three buffers the display lends it, so a frame is handed to that thread without a copy, and the thread widens each row straight into the panel's next page: with NEON for ARGB8888 at 1x and 2x, in plain C++ for other formats and scales. The log says which at startup.
-2. Input: `MiyooInputSetup` reads the buttons from `/dev/input/event0` and sends them as keys: the d-pad as the arrows, A and Start as Enter, B as Esc, X as Space, Y as Tab, Select as Backspace, L1/R1 as Q/E, L2/R2 as Z/C. **Menu** quits the game, back to Onion.
+2. Input: `MiyooInputSetup` reads the buttons from `/dev/input/event0` and sends them as keys: the d-pad as the arrows, A and Start as Enter, B as Esc, X as Space, Y as Tab, Select as Backspace, L1/R1 as Q/E, L2/R2 as Z/C. **Menu** quits the game, back to MainUI.
 
 Not set up: sound, battery reading, brightness, rumble.

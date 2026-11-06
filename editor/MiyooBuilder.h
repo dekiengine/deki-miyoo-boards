@@ -1,7 +1,7 @@
 #pragma once
 
-// Builds a Deki game for a Miyoo handheld running Onion OS, and installs it on
-// the handheld's SD card.
+// Builds a Deki game for a Miyoo handheld, stock or with Onion OS, and
+// installs it on the handheld's SD card.
 //
 // In this package's editor/ folder, so it is compiled into the package's
 // editor-side DLL and registered when a project has the package installed,
@@ -16,9 +16,9 @@
 //   - only the packages active for the platform are compiled, so nothing
 //     written for SDL3, ESP-IDF or Bluetooth reaches the ARM compiler
 //   - the platform's cxxFlags are the optimisation, for the engine and the game
-// then packed as an Onion app (OnionApp.h) in <build>/App/<Folder>/.
+// then packed as a MainUI app (MainUiApp.h) in <build>/App/<Folder>/.
 //
-// Deploy ("Install") copies that folder to App/ on an Onion SD card in a
+// Deploy ("Install") copies that folder to App/ on a Miyoo SD card in a
 // removable drive: the card in a reader, or the Miyoo over USB.
 
 #include <deki-editor/IconsTabler.h>
@@ -46,7 +46,7 @@ public:
     void Clean(const std::string& projectPath, BuildOutputCallback outputCallback = nullptr,
                BuildProgressCallback progressCallback = nullptr) override;
 
-    // Deploy: install the app on an Onion SD card
+    // Deploy: install the app on a Miyoo SD card
     bool SupportsDeploy() const override { return true; }
     const char* GetDeployLabel() const override { return "Install"; }
     std::vector<DeployTarget> EnumerateDeployTargets() const override;
@@ -65,11 +65,11 @@ public:
                             const std::vector<std::string>& packageDefines) override;
 
     // Identity
-    const char* GetName() const override { return "Miyoo (Onion OS)"; }
+    const char* GetName() const override { return "Miyoo"; }
     const char* GetIcon() const override { return ICON_TI_DEVICE_GAMEPAD; }
     const char* GetDescription() const override
     {
-        return TrMark("Build an Onion OS app for a Miyoo handheld and install it on its SD card");
+        return TrMark("Build a game for a Miyoo handheld, stock or Onion OS, and install it on its SD card");
     }
     std::string GetFrameworkId() const override { return "miyoo"; }
     std::vector<std::pair<std::string, std::string>> DescribePlatform(const PlatformConfig& config) const override;

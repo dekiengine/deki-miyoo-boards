@@ -5,10 +5,21 @@ Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
 
 ## Unreleased
 
+### Stock firmware cards too
+- An install takes any Miyoo SD card, with Onion or the stock firmware: a
+  removable drive with `App/` and `Emu/` at its top, as MainUI lays them out
+  on both. It used to need Onion's `.tmp_update/`. The card list says which
+  system each card has ("Miyoo SD card (E:, Onion)"). Tested on Onion
+  only.
+- The target is called **Miyoo Mini**, not "Miyoo Mini (Onion OS)", and the
+  code names follow what the app is: a MainUI app (`MainUiApp.h`, was
+  `OnionApp.h`; `resources/mainui/`), on a Miyoo card (`FindMiyooCards`,
+  `IsMiyooCard`, `NamesMiyooCard`).
+
 ### Fixed
 - An install names its card as written: `E:`, `E:\` and `e:/` are the same
-  card (`NamesOnionCard`); only the exact `E:` was accepted. A drive that is
-  not an Onion card is still refused, and the message lists the cards that
+  card (`NamesMiyooCard`); only the exact `E:` was accepted. A drive that is
+  not a Miyoo card is still refused, and the message lists the cards that
   are connected.
 
 ### Changed
@@ -18,9 +29,9 @@ Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
 ### Added
 - **The Miyoo Mini as a build target** (`miyoo_mini`, framework `miyoo`): the
   editor's Miyoo builder cross-compiles the game with the Arm GNU toolchain
-  it installs (a toolchain component), packs an Onion app (`App/<Folder>/`
+  it installs (a toolchain component), packs a MainUI app (`App/<Folder>/`
   with `config.json`, `launch.sh`, the icon and the game's data), and
-  installs it on an SD card with Onion, each file read back and checked.
+  installs it on the Miyoo's SD card, each file read back and checked.
 - **The display** (`MiyooDisplaySetup`): `/dev/fb0` at the panel's ARGB8888,
   the game's 320x240 scaled by whole pixels and turned 180 degrees, flipped
   between pages in step with the panel's refresh, which it measures at start.
@@ -37,6 +48,6 @@ Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
   `deki-desktop-integration` is not needed.
 - The platform's ARGB8888 screen and 64-pixel tiles for deki-3d's software
   rasteriser (`DEKI_3D_TILE_SIZE=64`).
-- Tests: the builder's toolchain file, CMake and Onion app, installing on fake
+- Tests: the builder's toolchain file, CMake and MainUI app, installing on fake
   SD cards, and the row widening, whose NEON path they hold to the plain one
   pixel for pixel when built for the Miyoo.

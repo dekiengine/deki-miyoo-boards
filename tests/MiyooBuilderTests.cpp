@@ -1,17 +1,17 @@
 // What the Miyoo builder writes and does without a Miyoo, a cross compiler or
 // an SD card: the toolchain file and the CMake it generates from the shipped
-// platform, the Onion app it packs, the cards it finds and how it installs on
+// platform, the MainUI app it packs, the cards it finds and how it installs on
 // one (fake folders here), and that the framework id hands miyoo_mini to it
 // rather than to the desktop builder.
 //
-// A mistake here shows up on the handheld as an app Onion does not list, a
+// A mistake here shows up on the handheld as an app MainUI does not list, a
 // game built for the wrong CPU, or an install that deleted something else on
 // the card, so it is worth pinning.
 
 #include <gtest/gtest.h>
 
 #include "editor/MiyooBuilder.h"
-#include "editor/OnionApp.h"
+#include "editor/MainUiApp.h"
 
 #include <deki-editor/build/BuilderDispatch.h>
 #include <deki-editor/build/PlatformConfig.h>
@@ -370,21 +370,21 @@ TEST_F(MiyooBuildFilesTest, TheProjectNameComesFromDekiJson)
     EXPECT_EQ(MiyooBuilder::ProjectName(m_Dir.Path().string()), "My Game!");
 }
 
-// --- The Onion app ---
+// --- The MainUI app ---
 
-TEST(OnionApp, TheFolderNameIsSafeOnTheCard)
+TEST(MainUiApp, TheFolderNameIsSafeOnTheCard)
 {
-    EXPECT_EQ(OnionAppFolderName("gpu3d"), "gpu3d");
-    EXPECT_EQ(OnionAppFolderName("My Game!"), "My_Game");
-    EXPECT_EQ(OnionAppFolderName("../../.tmp_update"), "tmp_update");
-    EXPECT_EQ(OnionAppFolderName("  "), "DekiGame");
-    EXPECT_EQ(OnionAppFolderName(""), "DekiGame");
-    EXPECT_EQ(OnionAppFolderName(std::string(80, 'a')).size(), 48u);
+    EXPECT_EQ(MainUiAppFolderName("gpu3d"), "gpu3d");
+    EXPECT_EQ(MainUiAppFolderName("My Game!"), "My_Game");
+    EXPECT_EQ(MainUiAppFolderName("../../.tmp_update"), "tmp_update");
+    EXPECT_EQ(MainUiAppFolderName("  "), "DekiGame");
+    EXPECT_EQ(MainUiAppFolderName(""), "DekiGame");
+    EXPECT_EQ(MainUiAppFolderName(std::string(80, 'a')).size(), 48u);
 }
 
-TEST(OnionApp, TheLaunchScriptRunsTheGameFromItsFolderWithLFEndings)
+TEST(MainUiApp, TheLaunchScriptRunsTheGameFromItsFolderWithLFEndings)
 {
-    const std::string script = OnionLaunchScript("My Game\r\nrm -rf /");
+    const std::string script = MainUiLaunchScript("My Game\r\nrm -rf /");
     EXPECT_EQ(script.find('\r'), std::string::npos);
     EXPECT_EQ(script.rfind("#!/bin/sh\n", 0), 0u);
     EXPECT_TRUE(Contains(script, "\ncd \"$(dirname \"$0\")\"\n"));
@@ -394,18 +394,18 @@ TEST(OnionApp, TheLaunchScriptRunsTheGameFromItsFolderWithLFEndings)
     EXPECT_FALSE(Contains(script, "\nrm -rf /"));
 }
 
-TEST(OnionApp, TheConfigNamesAnAbsoluteIcon)
+TEST(MainUiApp, TheConfigNamesAnAbsoluteIcon)
 {
-    const auto config = nlohmann::json::parse(OnionConfigJson("My \"Game\"", "My_Game"));
+    const auto config = nlohmann::json::parse(MainUiConfigJson("My \"Game\"", "My_Game"));
     EXPECT_EQ(config["label"], "My \"Game\"");
     EXPECT_EQ(config["icon"], "/mnt/SDCARD/App/My_Game/icon.png");
     EXPECT_EQ(config["launch"], "launch.sh");
     EXPECT_TRUE(config.contains("description"));
 }
 
-TEST(OnionApp, TheShippedIconIsThere)
+TEST(MainUiApp, TheShippedIconIsThere)
 {
-    EXPECT_TRUE(fs::is_regular_file(kPackage / "resources" / "onion" / "icon.png"));
+    EXPECT_TRUE(fs::is_regular_file(kPackage / "resources" / "mainui" / "icon.png"));
 }
 
 namespace
@@ -419,27 +419,33 @@ fs::path MakeApp(const fs::path& dir, const std::string& folder,
     Write(dir / "src" / "flash" / "project_data.bin", "settings");
     Write(dir / "src" / "flash" / "assets" / "a.bin", "asset");
     Write(dir / "src" / "icon.png", "png");
-    OnionAppSources sources;
+    MainUiAppSources sources;
     sources.executable = dir / "src" / "DekiGame";
     sources.payload = dir / "src" / "flash";
     sources.icon = dir / "src" / "icon.png";
     sources.label = folder;
     sources.folder = folder;
     std::string error;
-    EXPECT_TRUE(AssembleOnionApp(sources, dir / "App", error)) << error;
+    EXPECT_TRUE(AssembleMainUiApp(sources, dir / "App", error)) << error;
     return dir / "App" / folder;
 }
 
-fs::path MakeCard(const fs::path& root)
+// A Miyoo card as MainUI lays it out, with Onion's own folder or without it
+// (the stock firmware's).
+fs::path MakeCard(const fs::path& root, bool onion = true)
 {
-    fs::create_directories(root / ".tmp_update");
+    if (onion)
+    {
+        fs::create_directories(root / ".tmp_update");
+    }
+    fs::create_directories(root / "Emu" / "GBA");
     fs::create_directories(root / "App" / "Terminal");
     Write(root / "App" / "Terminal" / "config.json", "{}");
     return root;
 }
 }  // namespace
 
-TEST(OnionApp, TheAppFolderHasEverythingOnionNeeds)
+TEST(MainUiApp, TheAppFolderHasEverythingMainUiNeeds)
 {
     TempDir dir;
     const fs::path app = MakeApp(dir.Path(), "My_Game");
@@ -456,44 +462,67 @@ TEST(OnionApp, TheAppFolderHasEverythingOnionNeeds)
     EXPECT_FALSE(fs::exists(dir.Path() / "App" / "My_Game"));
 }
 
-TEST(OnionApp, PackingWithoutAPayloadSaysSo)
+TEST(MainUiApp, PackingWithoutAPayloadSaysSo)
 {
     TempDir dir;
     Write(dir.Path() / "DekiGame", "x");
     Write(dir.Path() / "icon.png", "x");
-    OnionAppSources sources;
+    MainUiAppSources sources;
     sources.executable = dir.Path() / "DekiGame";
     sources.payload = dir.Path() / "flash";
     sources.icon = dir.Path() / "icon.png";
     sources.label = sources.folder = "G";
     std::string error;
-    EXPECT_FALSE(AssembleOnionApp(sources, dir.Path() / "App", error));
+    EXPECT_FALSE(AssembleMainUiApp(sources, dir.Path() / "App", error));
     EXPECT_TRUE(Contains(error, "boot payload")) << error;
 }
 
 // --- Finding cards, installing ---
 
-TEST(OnionCards, OnlyACardWithOnionsLayoutCounts)
+TEST(MiyooCards, OnlyACardWithMainUisLayoutCounts)
 {
     TempDir dir;
     const fs::path onion = MakeCard(dir.Path() / "onion");
+    const fs::path stock = MakeCard(dir.Path() / "stock", false);
     fs::create_directories(dir.Path() / "apps-only" / "App");
     fs::create_directories(dir.Path() / "update-only" / ".tmp_update");
+    fs::create_directories(dir.Path() / "update-only" / "App");
     fs::create_directories(dir.Path() / "empty");
-    Write(dir.Path() / "file" / ".tmp_update", "not a folder");
+    Write(dir.Path() / "file" / "Emu", "not a folder");
     fs::create_directories(dir.Path() / "file" / "App");
 
     std::vector<std::string> roots;
-    for (const char* name : { "apps-only", "onion", "update-only", "empty", "file", "missing" })
+    for (const char* name : { "apps-only", "onion", "update-only", "stock", "empty", "file", "missing" })
     {
         roots.push_back((dir.Path() / name).string());
     }
-    const std::vector<std::string> cards = OnionCardsAmong(roots);
-    ASSERT_EQ(cards.size(), 1u);
+    const std::vector<std::string> cards = MiyooCardsAmong(roots);
+    ASSERT_EQ(cards.size(), 2u);
     EXPECT_EQ(fs::path(cards[0]), onion);
+    EXPECT_EQ(fs::path(cards[1]), stock);
 }
 
-TEST(OnionCards, AnInstallPutsTheAppInAppAndChecksIt)
+// The card list says which system a card has, so a stock card and an Onion
+// card in two readers can be told apart.
+TEST(MiyooCards, ACardSaysWhetherItHasOnionOrTheStockFirmware)
+{
+    TempDir dir;
+    EXPECT_EQ(MiyooCardSystem(MakeCard(dir.Path() / "onion")), "Onion");
+    EXPECT_EQ(MiyooCardSystem(MakeCard(dir.Path() / "stock", false)), "stock");
+}
+
+TEST(MiyooCards, AStockCardTakesAnInstallAsOnionsDoes)
+{
+    TempDir dir;
+    const fs::path app = MakeApp(dir.Path(), "My_Game");
+    const fs::path card = MakeCard(dir.Path() / "card", false);
+    std::string error;
+    ASSERT_TRUE(InstallMainUiApp(app, card, "My_Game", nullptr, nullptr, nullptr, error)) << error;
+    EXPECT_EQ(Read(card / "App" / "My_Game" / "DekiGame"), Read(app / "DekiGame"));
+    EXPECT_FALSE(fs::exists(card / ".tmp_update"));
+}
+
+TEST(MiyooCards, AnInstallPutsTheAppInAppAndChecksIt)
 {
     TempDir dir;
     const fs::path app = MakeApp(dir.Path(), "My_Game");
@@ -501,7 +530,7 @@ TEST(OnionCards, AnInstallPutsTheAppInAppAndChecksIt)
 
     std::string error;
     std::vector<float> progress;
-    ASSERT_TRUE(InstallOnionApp(
+    ASSERT_TRUE(InstallMainUiApp(
         app, card, "My_Game", nullptr, [&](float v, const std::string&) { progress.push_back(v); }, nullptr, error))
         << error;
     for (const char* f : { "DekiGame", "launch.sh", "config.json", "icon.png", "flash/assets/a.bin", ".deki-app" })
@@ -521,70 +550,70 @@ TEST(OnionCards, AnInstallPutsTheAppInAppAndChecksIt)
     EXPECT_EQ(entries, 2u);
 }
 
-TEST(OnionCards, ReinstallingReplacesTheEditorsOwnApp)
+TEST(MiyooCards, ReinstallingReplacesTheEditorsOwnApp)
 {
     TempDir dir;
     const fs::path card = MakeCard(dir.Path() / "card");
     std::string error;
-    ASSERT_TRUE(InstallOnionApp(MakeApp(dir.Path() / "one", "G"), card, "G", nullptr, nullptr, nullptr, error));
+    ASSERT_TRUE(InstallMainUiApp(MakeApp(dir.Path() / "one", "G"), card, "G", nullptr, nullptr, nullptr, error));
     Write(card / "App" / "G" / "flash" / "stale.bin", "left from before");
 
     ASSERT_TRUE(
-        InstallOnionApp(MakeApp(dir.Path() / "two", "G", "new game"), card, "G", nullptr, nullptr, nullptr, error))
+        InstallMainUiApp(MakeApp(dir.Path() / "two", "G", "new game"), card, "G", nullptr, nullptr, nullptr, error))
         << error;
     EXPECT_EQ(Read(card / "App" / "G" / "DekiGame"), "new game");
     EXPECT_FALSE(fs::exists(card / "App" / "G" / "flash" / "stale.bin"));
 }
 
-TEST(OnionCards, AnAppTheEditorDidNotInstallIsLeftAlone)
+TEST(MiyooCards, AnAppTheEditorDidNotInstallIsLeftAlone)
 {
     TempDir dir;
     const fs::path app = MakeApp(dir.Path(), "Terminal");
     const fs::path card = MakeCard(dir.Path() / "card");
     std::string error;
-    EXPECT_FALSE(InstallOnionApp(app, card, "Terminal", nullptr, nullptr, nullptr, error));
+    EXPECT_FALSE(InstallMainUiApp(app, card, "Terminal", nullptr, nullptr, nullptr, error));
     EXPECT_TRUE(Contains(error, "not installed by the Deki Editor")) << error;
     EXPECT_EQ(Read(card / "App" / "Terminal" / "config.json"), "{}");
     EXPECT_FALSE(fs::exists(card / "App" / "Terminal" / "DekiGame"));
 }
 
-TEST(OnionCards, NothingIsWrittenToADriveWithoutOnion)
+TEST(MiyooCards, NothingIsWrittenToADriveThatIsNotAMiyooCard)
 {
     TempDir dir;
     const fs::path app = MakeApp(dir.Path(), "G");
     const fs::path notACard = dir.Path() / "usb";
     fs::create_directories(notACard / "App");
     std::string error;
-    EXPECT_FALSE(InstallOnionApp(app, notACard, "G", nullptr, nullptr, nullptr, error));
+    EXPECT_FALSE(InstallMainUiApp(app, notACard, "G", nullptr, nullptr, nullptr, error));
     EXPECT_FALSE(fs::exists(notACard / "App" / "G"));
 }
 
-TEST(OnionCards, ACancelledInstallLeavesTheOldAppAndNoStaging)
+TEST(MiyooCards, ACancelledInstallLeavesTheOldAppAndNoStaging)
 {
     TempDir dir;
     const fs::path card = MakeCard(dir.Path() / "card");
     std::string error;
-    ASSERT_TRUE(InstallOnionApp(MakeApp(dir.Path() / "one", "G", "old"), card, "G", nullptr, nullptr, nullptr, error));
+    ASSERT_TRUE(InstallMainUiApp(MakeApp(dir.Path() / "one", "G", "old"), card, "G", nullptr, nullptr, nullptr, error));
     std::atomic<bool> cancel{ true };
-    EXPECT_FALSE(InstallOnionApp(MakeApp(dir.Path() / "two", "G", "new"), card, "G", nullptr, nullptr, &cancel, error));
+    EXPECT_FALSE(InstallMainUiApp(MakeApp(dir.Path() / "two", "G", "new"), card, "G", nullptr, nullptr, &cancel, error));
     EXPECT_EQ(Read(card / "App" / "G" / "DekiGame"), "old");
     EXPECT_FALSE(fs::exists(card / "App" / ".G.deki-install"));
 }
 
 // An install names its card as someone wrote it: the editor's tool, a script,
 // the Build panel. The same drive with or without its separator is the card.
-TEST(OnionCards, ACardIsTheSameWithOrWithoutATrailingSeparator)
+TEST(MiyooCards, ACardIsTheSameWithOrWithoutATrailingSeparator)
 {
 #ifdef _WIN32
-    EXPECT_TRUE(NamesOnionCard("E:", "E:"));
-    EXPECT_TRUE(NamesOnionCard(R"(E:\)", "E:"));
-    EXPECT_TRUE(NamesOnionCard("e:/", "E:"));
-    EXPECT_FALSE(NamesOnionCard("F:", "E:"));
-    EXPECT_FALSE(NamesOnionCard(R"(E:\App)", "E:"));
+    EXPECT_TRUE(NamesMiyooCard("E:", "E:"));
+    EXPECT_TRUE(NamesMiyooCard(R"(E:\)", "E:"));
+    EXPECT_TRUE(NamesMiyooCard("e:/", "E:"));
+    EXPECT_FALSE(NamesMiyooCard("F:", "E:"));
+    EXPECT_FALSE(NamesMiyooCard(R"(E:\App)", "E:"));
 #else
-    EXPECT_TRUE(NamesOnionCard("/media/user/ONION/", "/media/user/ONION"));
-    EXPECT_FALSE(NamesOnionCard("/media/user/onion", "/media/user/ONION"));
-    EXPECT_FALSE(NamesOnionCard("/media/user/ONION/App", "/media/user/ONION"));
+    EXPECT_TRUE(NamesMiyooCard("/media/user/ONION/", "/media/user/ONION"));
+    EXPECT_FALSE(NamesMiyooCard("/media/user/onion", "/media/user/ONION"));
+    EXPECT_FALSE(NamesMiyooCard("/media/user/ONION/App", "/media/user/ONION"));
 #endif
-    EXPECT_FALSE(NamesOnionCard("", "E:"));
+    EXPECT_FALSE(NamesMiyooCard("", "E:"));
 }

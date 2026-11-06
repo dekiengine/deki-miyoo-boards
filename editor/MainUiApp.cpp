@@ -1,4 +1,4 @@
-#include "OnionApp.h"
+#include "MainUiApp.h"
 
 #include <deki-editor/EditorHttpUtils.h>
 
@@ -25,7 +25,7 @@ namespace DekiEditor
 
 namespace
 {
-bool OnionWriteText(const fs::path& path, const std::string& text)
+bool WriteAppText(const fs::path& path, const std::string& text)
 {
     // Binary, so a "\n" stays one byte on Windows.
     std::ofstream out(path, std::ios::binary | std::ios::trunc);
@@ -34,7 +34,7 @@ bool OnionWriteText(const fs::path& path, const std::string& text)
 }
 
 // Every regular file under `root`, relative to it.
-std::vector<fs::path> OnionFilesUnder(const fs::path& root, std::error_code& ec)
+std::vector<fs::path> AppFilesUnder(const fs::path& root, std::error_code& ec)
 {
     std::vector<fs::path> files;
     for (auto it = fs::recursive_directory_iterator(root, ec); !ec && it != fs::recursive_directory_iterator();
@@ -51,7 +51,7 @@ std::vector<fs::path> OnionFilesUnder(const fs::path& root, std::error_code& ec)
 }
 }  // namespace
 
-std::string OnionAppFolderName(const std::string& projectName)
+std::string MainUiAppFolderName(const std::string& projectName)
 {
     std::string out;
     for (unsigned char c : projectName)
@@ -74,7 +74,7 @@ std::string OnionAppFolderName(const std::string& projectName)
     return out;
 }
 
-std::string OnionLaunchScript(const std::string& label)
+std::string MainUiLaunchScript(const std::string& label)
 {
     // The label goes in a comment only; a newline in it would end the comment.
     std::string safeLabel = label;
@@ -90,11 +90,11 @@ std::string OnionLaunchScript(const std::string& label)
            "./DekiGame > ./dekigame.out 2>&1\n";
 }
 
-std::string OnionConfigJson(const std::string& label, const std::string& folder)
+std::string MainUiConfigJson(const std::string& label, const std::string& folder)
 {
     nlohmann::ordered_json config;
     config["label"] = label;
-    // Onion resolves a relative icon path against its own folder, not the
+    // MainUI resolves a relative icon path against its own folder, not the
     // app's, so it has to be the absolute path on the device.
     config["icon"] = "/mnt/SDCARD/App/" + folder + "/icon.png";
     config["launch"] = "launch.sh";
@@ -102,7 +102,7 @@ std::string OnionConfigJson(const std::string& label, const std::string& folder)
     return config.dump(2) + "\n";
 }
 
-bool AssembleOnionApp(const OnionAppSources& sources, const fs::path& appsRoot, std::string& error)
+bool AssembleMainUiApp(const MainUiAppSources& sources, const fs::path& appsRoot, std::string& error)
 {
     std::error_code ec;
     if (!fs::is_regular_file(sources.executable, ec))
@@ -148,9 +148,9 @@ bool AssembleOnionApp(const OnionAppSources& sources, const fs::path& appsRoot, 
         return false;
     }
 
-    if (!OnionWriteText(app / "launch.sh", OnionLaunchScript(sources.label)) ||
-        !OnionWriteText(app / "config.json", OnionConfigJson(sources.label, sources.folder)) ||
-        !OnionWriteText(app / kOnionAppMarker,
+    if (!WriteAppText(app / "launch.sh", MainUiLaunchScript(sources.label)) ||
+        !WriteAppText(app / "config.json", MainUiConfigJson(sources.label, sources.folder)) ||
+        !WriteAppText(app / kMainUiAppMarker,
                         "Installed by the Deki Editor, which replaces this folder when it installs " + sources.label +
                             " again.\n"))
     {
@@ -160,18 +160,24 @@ bool AssembleOnionApp(const OnionAppSources& sources, const fs::path& appsRoot, 
     return true;
 }
 
-bool IsOnionCard(const fs::path& root)
+bool IsMiyooCard(const fs::path& root)
 {
     std::error_code ec;
-    return fs::is_directory(root / ".tmp_update", ec) && fs::is_directory(root / "App", ec);
+    return fs::is_directory(root / "App", ec) && fs::is_directory(root / "Emu", ec);
 }
 
-std::vector<std::string> OnionCardsAmong(const std::vector<std::string>& roots)
+std::string MiyooCardSystem(const fs::path& root)
+{
+    std::error_code ec;
+    return fs::is_directory(root / ".tmp_update", ec) ? "Onion" : "stock";
+}
+
+std::vector<std::string> MiyooCardsAmong(const std::vector<std::string>& roots)
 {
     std::vector<std::string> cards;
     for (const auto& root : roots)
     {
-        if (IsOnionCard(root))
+        if (IsMiyooCard(root))
         {
             cards.push_back(root);
         }
@@ -179,7 +185,7 @@ std::vector<std::string> OnionCardsAmong(const std::vector<std::string>& roots)
     return cards;
 }
 
-fs::path OnionCardRoot(const std::string& deployTargetId)
+fs::path MiyooCardRoot(const std::string& deployTargetId)
 {
 #ifdef _WIN32
     // "E:" on its own means the current directory on E:, not its root.
@@ -197,7 +203,7 @@ namespace
 // on Windows, where drive letters and paths ignore case, lower case.
 std::string CardKey(const std::string& id)
 {
-    std::string key = OnionCardRoot(id).lexically_normal().generic_string();
+    std::string key = MiyooCardRoot(id).lexically_normal().generic_string();
     while (key.size() > 1 && key.back() == '/')
     {
         key.pop_back();
@@ -210,12 +216,12 @@ std::string CardKey(const std::string& id)
 }
 }  // namespace
 
-bool NamesOnionCard(const std::string& given, const std::string& cardId)
+bool NamesMiyooCard(const std::string& given, const std::string& cardId)
 {
     return !given.empty() && CardKey(given) == CardKey(cardId);
 }
 
-std::vector<DeployTarget> FindOnionCards()
+std::vector<DeployTarget> FindMiyooCards()
 {
     std::vector<DeployTarget> targets;
 #ifdef _WIN32
@@ -230,18 +236,18 @@ std::vector<DeployTarget> FindOnionCards()
         }
         const std::string id = std::string(1, static_cast<char>('A' + i)) + ":";
         const std::string root = id + "\\";
-        if (GetDriveTypeA(root.c_str()) != DRIVE_REMOVABLE || !IsOnionCard(root))
+        if (GetDriveTypeA(root.c_str()) != DRIVE_REMOVABLE || !IsMiyooCard(root))
         {
             continue;
         }
         char volume[MAX_PATH + 1] = {};
-        std::string label = "Onion SD card (" + id;
+        std::string label = "Miyoo SD card (" + id;
         if (GetVolumeInformationA(root.c_str(), volume, sizeof(volume), nullptr, nullptr, nullptr, nullptr, 0) &&
             volume[0] != '\0')
         {
             label += " " + std::string(volume);
         }
-        targets.push_back({ id, label + ")" });
+        targets.push_back({ id, label + ", " + MiyooCardSystem(root) + ")" });
     }
 #else
     // Where desktops mount removable media: /media/<user>/<volume>,
@@ -260,15 +266,15 @@ std::vector<DeployTarget> FindOnionCards()
             }
         }
     }
-    for (const auto& root : OnionCardsAmong(roots))
+    for (const auto& root : MiyooCardsAmong(roots))
     {
-        targets.push_back({ root, "Onion SD card (" + root + ")" });
+        targets.push_back({ root, "Miyoo SD card (" + root + ", " + MiyooCardSystem(root) + ")" });
     }
 #endif
     return targets;
 }
 
-bool InstallOnionApp(const fs::path& app, const fs::path& cardRoot, const std::string& folder,
+bool InstallMainUiApp(const fs::path& app, const fs::path& cardRoot, const std::string& folder,
                      const BuildOutputCallback& log, const std::function<void(float, const std::string&)>& onProgress,
                      const std::atomic<bool>* cancel, std::string& error)
 {
@@ -294,12 +300,12 @@ bool InstallOnionApp(const fs::path& app, const fs::path& cardRoot, const std::s
         error = "there is no built app at " + app.string() + "; build first";
         return false;
     }
-    if (!IsOnionCard(cardRoot))
+    if (!IsMiyooCard(cardRoot))
     {
-        error = cardRoot.string() + " is not an SD card with Onion OS on it (no .tmp_update/ and App/ at its top)";
+        error = cardRoot.string() + " is not a Miyoo SD card (no App/ and Emu/ at its top)";
         return false;
     }
-    if (folder.empty() || folder != OnionAppFolderName(folder))
+    if (folder.empty() || folder != MainUiAppFolderName(folder))
     {
         error = "'" + folder + "' is not an app folder name";
         return false;
@@ -308,7 +314,7 @@ bool InstallOnionApp(const fs::path& app, const fs::path& cardRoot, const std::s
     const fs::path dest = cardRoot / "App" / folder;
     // A hidden name of this app's own, beside it: only this install writes it.
     const fs::path staging = cardRoot / "App" / ("." + folder + ".deki-install");
-    if (fs::exists(dest, ec) && !fs::exists(dest / kOnionAppMarker, ec))
+    if (fs::exists(dest, ec) && !fs::exists(dest / kMainUiAppMarker, ec))
     {
         error = "App/" + folder +
                 " on the card was not installed by the Deki Editor, so it is left alone. "
@@ -316,7 +322,7 @@ bool InstallOnionApp(const fs::path& app, const fs::path& cardRoot, const std::s
         return false;
     }
 
-    const std::vector<fs::path> files = OnionFilesUnder(app, ec);
+    const std::vector<fs::path> files = AppFilesUnder(app, ec);
     if (ec || files.empty())
     {
         error = "cannot read the built app at " + app.string() + (ec ? ": " + ec.message() : std::string());

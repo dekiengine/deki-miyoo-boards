@@ -61,7 +61,7 @@ std::string MiyooToolchainDefinitionJson()
 
     nlohmann::json def = {
         { "id", "miyoo" },
-        { "name", "Miyoo (Onion OS)" },
+        { "name", "Miyoo" },
         { "family", "linux-arm" },
         { "components", nlohmann::json::array({ compiler }) },
     };
