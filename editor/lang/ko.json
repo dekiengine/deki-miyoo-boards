@@ -1,5 +1,14 @@
 {
     "Build a game for a Miyoo handheld, stock or Onion OS, and install it on its SD card": "Miyoo 휴대용 게임기(기본 펌웨어 또는 Onion OS)용 게임을 빌드하고 SD 카드에 설치합니다",
     "No Arm GNU Toolchain archive is pinned for this host yet; Miyoo builds need a Windows x86_64 machine for now": "이 호스트용 Arm GNU Toolchain 압축 파일은 아직 고정되지 않았습니다. 지금은 Miyoo 빌드에 Windows x86_64 컴퓨터가 필요합니다",
-    "The cross compiler for the Miyoo Mini (ARMv7, hard float, Linux), from Arm": "Miyoo Mini용 크로스 컴파일러(ARMv7, 하드 플로트, Linux)로, Arm이 제공합니다"
+    "The cross compiler for the Miyoo Mini (ARMv7, hard float, Linux), from Arm": "Miyoo Mini용 크로스 컴파일러(ARMv7, 하드 플로트, Linux)로, Arm이 제공합니다",
+    "Feeds a Miyoo handheld's buttons to the engine as keys.": "Miyoo 휴대용 게임기의 버튼을 키로 엔진에 전달합니다.",
+    "Miyoo": "Miyoo",
+    "Miyoo Display Setup": "Miyoo 디스플레이 설정",
+    "Miyoo Input Setup": "Miyoo 입력 설정",
+    "Panel pixels per screen pixel. 0 scales as large as fits.": "화면 픽셀 하나당 패널 픽셀 수입니다. 0이면 들어가는 만큼 최대로 확대합니다.",
+    "Rotate 180": "180도 회전",
+    "Scale": "배율",
+    "Shows the game on a Miyoo handheld's screen.": "Miyoo 휴대용 게임기의 화면에 게임을 표시합니다.",
+    "Turn frames 180 degrees. The Miyoo Mini's panel is mounted upside down.": "프레임을 180도 돌립니다. Miyoo Mini의 패널은 거꾸로 장착되어 있습니다."
 }

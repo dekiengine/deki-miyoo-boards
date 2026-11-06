@@ -1,5 +1,14 @@
 {
     "Build a game for a Miyoo handheld, stock or Onion OS, and install it on its SD card": "为 Miyoo 掌机（原厂固件或 Onion OS）构建游戏，并安装到它的 SD 卡上",
     "No Arm GNU Toolchain archive is pinned for this host yet; Miyoo builds need a Windows x86_64 machine for now": "尚未为此主机固定 Arm GNU Toolchain 压缩包；目前 Miyoo 构建需要 Windows x86_64 机器",
-    "The cross compiler for the Miyoo Mini (ARMv7, hard float, Linux), from Arm": "Miyoo Mini 的交叉编译器（ARMv7，硬浮点，Linux），由 Arm 提供"
+    "The cross compiler for the Miyoo Mini (ARMv7, hard float, Linux), from Arm": "Miyoo Mini 的交叉编译器（ARMv7，硬浮点，Linux），由 Arm 提供",
+    "Feeds a Miyoo handheld's buttons to the engine as keys.": "把 Miyoo 掌机的按键作为按键输入交给引擎。",
+    "Miyoo": "Miyoo",
+    "Miyoo Display Setup": "Miyoo 显示设置",
+    "Miyoo Input Setup": "Miyoo 输入设置",
+    "Panel pixels per screen pixel. 0 scales as large as fits.": "每个屏幕像素对应的面板像素数。0 则放大到能容纳的最大尺寸。",
+    "Rotate 180": "旋转 180 度",
+    "Scale": "缩放",
+    "Shows the game on a Miyoo handheld's screen.": "在 Miyoo 掌机的屏幕上显示游戏。",
+    "Turn frames 180 degrees. The Miyoo Mini's panel is mounted upside down.": "把帧旋转 180 度。Miyoo Mini 的面板是倒装的。"
 }
