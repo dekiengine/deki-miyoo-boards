@@ -656,3 +656,15 @@ TEST(MiyooCards, AnInstallFindsTheProjectsAppUnderAnEarlierName)
     EXPECT_TRUE(EarlierAppsOfProject(card, other, "Other_Game").empty());
     EXPECT_TRUE(EarlierAppsOfProject(card, "", "3d-demo").empty());
 }
+
+// An older deki-desktop-integration, or any package with a main() of its own,
+// stops the build before it compiles, naming the package: the game's entry is
+// the engine's now, and two would only show as the linker's "multiple
+// definition".
+TEST_F(MiyooBuildFilesTest, APackageWithItsOwnMainStopsTheBuildNamingIt)
+{
+    const fs::path pkg = m_Dir.Path() / "packages" / "deki-miyoo-boards";
+    Write(pkg / "OldEntry.cpp", "int main(int argc, char* argv[])\n{\n    return 0;\n}\n");
+    builder.SetBuildOptions({});
+    EXPECT_FALSE(builder.GenerateBuildFiles(m_Dir.Path().string(), MiyooMini(), { "DEKI_PACKAGE_MIYOO" }));
+}
