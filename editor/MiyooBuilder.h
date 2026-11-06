@@ -8,7 +8,7 @@
 // and never into a game, which leaves editor/ out. It claims the framework id
 // "miyoo"; platforms/miyoo_mini/miyoo_mini.json names it.
 //
-// The game is the desktop simulator's kind of build (one executable, from
+// The game is the desktop build's kind of build (one executable, from
 // CMakeGen::GenerateExecutableCMakeLists) cross-compiled for ARM Linux:
 //   - the toolchain file comes from the platform's frameworkOptions
 //     (toolchainPrefix, cpuFlags, static) and names the Arm GNU Toolchain the

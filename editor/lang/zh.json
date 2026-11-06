@@ -1,0 +1,5 @@
+{
+    "Build a game for a Miyoo handheld, stock or Onion OS, and install it on its SD card": "为 Miyoo 掌机（原厂固件或 Onion OS）构建游戏，并安装到它的 SD 卡上",
+    "No Arm GNU Toolchain archive is pinned for this host yet; Miyoo builds need a Windows x86_64 machine for now": "尚未为此主机固定 Arm GNU Toolchain 压缩包；目前 Miyoo 构建需要 Windows x86_64 机器",
+    "The cross compiler for the Miyoo Mini (ARMv7, hard float, Linux), from Arm": "Miyoo Mini 的交叉编译器（ARMv7，硬浮点，Linux），由 Arm 提供"
+}

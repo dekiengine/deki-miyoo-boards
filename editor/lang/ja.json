@@ -1,0 +1,5 @@
+{
+    "Build a game for a Miyoo handheld, stock or Onion OS, and install it on its SD card": "Miyoo の携帯ゲーム機 (標準ファームウェアまたは Onion OS) 向けにゲームをビルドし、SD カードにインストールします",
+    "No Arm GNU Toolchain archive is pinned for this host yet; Miyoo builds need a Windows x86_64 machine for now": "このホスト向けの Arm GNU Toolchain アーカイブはまだ固定されていません。現在、Miyoo のビルドには Windows x86_64 のマシンが必要です",
+    "The cross compiler for the Miyoo Mini (ARMv7, hard float, Linux), from Arm": "Miyoo Mini 用のクロスコンパイラー (ARMv7、ハードフロート、Linux)。Arm が提供しています"
+}
