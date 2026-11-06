@@ -542,6 +542,7 @@ void MiyooBuilder::DoBuild(const std::string& projectPath, BuildOutputCallback o
     sources.icon = fs::path(iconDir) / "resources" / "mainui" / "icon.png";
     sources.label = ProjectName(projectPath);
     sources.folder = MainUiAppFolderName(sources.label);
+    sources.projectId = MainUiProjectId(projectPath);
     std::string error;
     if (iconDir.empty() || !AssembleMainUiApp(sources, fs::path(buildDir) / "App", error))
     {
@@ -684,6 +685,14 @@ void MiyooBuilder::DoDeploy(const std::string& projectPath, const std::string& c
                 ". Eject the card safely before taking it out; the game "
                 "is in the Miyoo's Apps.",
             false);
+        // A rename gives the app a new folder; the old one is the player's to
+        // remove, as it may hold the game's saves.
+        for (const std::string& old : EarlierAppsOfProject(card, MainUiProjectId(projectPath), folder))
+        {
+            out("App/" + old + " on the card is this project's app under an earlier name, left as it is (it may "
+                "hold the game's saves). Delete that folder from the card if it is no longer wanted.",
+                false);
+        }
     }
     Report(BuildState::Completed, "Installed on " + cardId, 1.0f, progress);
 }

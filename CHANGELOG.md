@@ -5,6 +5,17 @@ Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
 
 ## Unreleased
 
+### Renamed projects, and the Miyoo Mini's memory
+- An app's `.deki-app` names its project (a hash of the project's folder, not
+  the folder itself). After a project is renamed, an install says which app on
+  the card is the same project under its earlier name and leaves it there,
+  since it may hold the game's saves (`EarlierAppsOfProject`).
+- `miyoo_mini` states 80 MB of memory (`externalMemorySize`), so deki-3d
+  checks a model against it as on a board: measured on a Miyoo Mini with
+  Onion, Linux has 85 MB available before the game starts, and the rest is the
+  game's code and screen buffers. It also grants packages `memory:external`,
+  which the hosted memory serves from the same heap.
+
 ### Stock firmware cards too
 - An install takes any Miyoo SD card, with Onion or the stock firmware: a
   removable drive with `App/` and `Emu/` at its top, as MainUI lays them out

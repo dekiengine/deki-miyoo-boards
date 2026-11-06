@@ -8,6 +8,7 @@
     "DEKI_3D_TILE_SIZE=64"
   ],
   "displayName": "Miyoo Mini",
+  "externalMemorySize": 83886080,
   "family": "linux-arm",
   "framework": "miyoo",
   "frameworkOptions": {

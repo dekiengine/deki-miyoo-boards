@@ -617,3 +617,42 @@ TEST(MiyooCards, ACardIsTheSameWithOrWithoutATrailingSeparator)
 #endif
     EXPECT_FALSE(NamesMiyooCard("", "E:"));
 }
+
+// A rename gives the app a new folder and leaves the old one on the card,
+// with the game's saves. The install names it, knowing it by the project id
+// in its marker, and never names another project's app.
+TEST(MiyooCards, AnInstallFindsTheProjectsAppUnderAnEarlierName)
+{
+    TempDir dir;
+    const fs::path card = MakeCard(dir.Path() / "card");
+    const std::string mine = MainUiProjectId(dir.Path() / "project");
+    const std::string other = MainUiProjectId(dir.Path() / "another");
+    EXPECT_NE(mine, other);
+    EXPECT_EQ(mine, MainUiProjectId(dir.Path() / "project" / ""));
+
+    auto install = [&](const std::string& folder, const std::string& projectId)
+    {
+        const fs::path built = dir.Path() / ("build-" + folder);
+        Write(built / "DekiGame", "x");
+        Write(built / "flash" / "project_data.bin", "data");
+        Write(built / "icon.png", "png");
+        MainUiAppSources sources;
+        sources.executable = built / "DekiGame";
+        sources.payload = built / "flash";
+        sources.icon = built / "icon.png";
+        sources.label = sources.folder = folder;
+        sources.projectId = projectId;
+        std::string error;
+        ASSERT_TRUE(AssembleMainUiApp(sources, built / "App", error)) << error;
+        ASSERT_TRUE(InstallMainUiApp(built / "App" / folder, card, folder, nullptr, nullptr, nullptr, error)) << error;
+    };
+    install("gpu3d", mine);
+    install("Other_Game", other);
+    install("Unmarked", "");  // installed before the marker named its project
+    install("3d-demo", mine);
+
+    // Terminal, which the editor did not install, is never named either.
+    EXPECT_EQ(EarlierAppsOfProject(card, mine, "3d-demo"), std::vector<std::string>{ "gpu3d" });
+    EXPECT_TRUE(EarlierAppsOfProject(card, other, "Other_Game").empty());
+    EXPECT_TRUE(EarlierAppsOfProject(card, "", "3d-demo").empty());
+}

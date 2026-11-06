@@ -53,7 +53,20 @@ struct MainUiAppSources
     std::filesystem::path icon;        // icon.png
     std::string label;                 // the name the Apps menu shows
     std::string folder;                // MainUiAppFolderName of the project
+    std::string projectId;             // MainUiProjectId of the project, kept in the marker
 };
+
+/// An id for the project at `projectPath`, the same for as long as its folder
+/// stays where it is (a hash of the path, so the card does not carry the
+/// computer's folder names). The app's marker holds it, so an install can
+/// tell the project's app under an earlier name from another project's.
+std::string MainUiProjectId(const std::filesystem::path& projectPath);
+
+/// The app folders on the card, other than `folder`, that the editor installed
+/// for the project `projectId`: its app under an earlier name, which a rename
+/// leaves behind. Sorted.
+std::vector<std::string> EarlierAppsOfProject(const std::filesystem::path& cardRoot, const std::string& projectId,
+                                              const std::string& folder);
 
 /// Makes <appsRoot>/<folder>/ from `sources`. appsRoot is the build's own
 /// App/ directory, emptied first so it holds this one app. False, with

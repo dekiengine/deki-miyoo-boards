@@ -6,6 +6,8 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cstdint>
+#include <cstdio>
 #include <fstream>
 
 #ifdef _WIN32
@@ -148,16 +150,83 @@ bool AssembleMainUiApp(const MainUiAppSources& sources, const fs::path& appsRoot
         return false;
     }
 
+    std::string marker =
+        "Installed by the Deki Editor, which replaces this folder when it installs " + sources.label + " again.\n";
+    if (!sources.projectId.empty())
+    {
+        marker += "project " + sources.projectId + "\n";
+    }
     if (!WriteAppText(app / "launch.sh", MainUiLaunchScript(sources.label)) ||
         !WriteAppText(app / "config.json", MainUiConfigJson(sources.label, sources.folder)) ||
-        !WriteAppText(app / kMainUiAppMarker,
-                        "Installed by the Deki Editor, which replaces this folder when it installs " + sources.label +
-                            " again.\n"))
+        !WriteAppText(app / kMainUiAppMarker, marker))
     {
         error = "cannot write the app's files into " + app.string();
         return false;
     }
     return true;
+}
+
+std::string MainUiProjectId(const fs::path& projectPath)
+{
+    std::error_code ec;
+    fs::path where = fs::weakly_canonical(projectPath, ec);
+    if (ec)
+    {
+        where = fs::absolute(projectPath, ec);
+    }
+    std::string key = where.lexically_normal().generic_string();
+    while (key.size() > 1 && key.back() == '/')
+    {
+        key.pop_back();
+    }
+#ifdef _WIN32
+    std::transform(key.begin(), key.end(), key.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+#endif
+    uint64_t hash = 1469598103934665603ull;  // FNV-1a
+    for (unsigned char c : key)
+    {
+        hash = (hash ^ c) * 1099511628211ull;
+    }
+    char text[17];
+    std::snprintf(text, sizeof(text), "%016llx", static_cast<unsigned long long>(hash));
+    return text;
+}
+
+std::vector<std::string> EarlierAppsOfProject(const fs::path& cardRoot, const std::string& projectId,
+                                              const std::string& folder)
+{
+    std::vector<std::string> earlier;
+    if (projectId.empty())
+    {
+        return earlier;
+    }
+    const std::string line = "project " + projectId;
+    std::error_code ec;
+    for (const auto& entry : fs::directory_iterator(cardRoot / "App", ec))
+    {
+        const std::string name = entry.path().filename().string();
+        std::error_code inner;
+        if (name == folder || name.empty() || name[0] == '.' || !entry.is_directory(inner))
+        {
+            continue;
+        }
+        std::ifstream in(entry.path() / kMainUiAppMarker, std::ios::binary);
+        for (std::string text; std::getline(in, text);)
+        {
+            if (!text.empty() && text.back() == '\r')
+            {
+                text.pop_back();
+            }
+            if (text == line)
+            {
+                earlier.push_back(name);
+                break;
+            }
+        }
+    }
+    std::sort(earlier.begin(), earlier.end());
+    return earlier;
 }
 
 bool IsMiyooCard(const fs::path& root)

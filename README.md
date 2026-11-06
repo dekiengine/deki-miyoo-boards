@@ -60,6 +60,8 @@ The game also writes `dekigame.log` (its own log) and the files it saves into it
 
 **Install** copies the app to `App/<Folder>` on the Miyoo's SD card: put the card in a card reader, and the target list shows each removable drive with `App/` and `Emu/` at its top, and whether it has Onion (`.tmp_update/`) or the stock firmware. The copy goes to a hidden folder first and each file is read back and checked against the build before it replaces the old app, so a card pulled out halfway still has the old one. Eject the card before taking it out.
 
+Renaming the project (Project Settings > Project > Name) gives the app a new folder. The old one stays on the card, as it may hold the game's saves, and the next Install says which it is; delete it from the card when it is no longer wanted.
+
 Only `App/<Folder>` is ever replaced, and only when the editor made it. An app of the same name installed another way is left alone, and Install says so; rename the project, or move that folder off the card.
 
 Without Install: copy `App/<Folder>` into `App/` on the card yourself.
@@ -70,5 +72,7 @@ Boot order, as the boot scene lists it:
 
 1. Display: `MiyooDisplaySetup` opens `/dev/fb0`, scales the game's 320x240 by whole pixels to fill the panel and turns it 180 degrees (the panel is mounted upside down). Frames are presented on their own thread, in step with the panel's refresh. The game draws into three buffers the display lends it, so a frame is handed to that thread without a copy, and the thread widens each row straight into the panel's next page: with NEON for ARGB8888 at 1x and 2x, in plain C++ for other formats and scales. The log says which at startup.
 2. Input: `MiyooInputSetup` reads the buttons from `/dev/input/event0` and sends them as keys: the d-pad as the arrows, A and Start as Enter, B as Esc, X as Space, Y as Tab, Select as Backspace, L1/R1 as Q/E, L2/R2 as Z/C. **Menu** quits the game, back to MainUI.
+
+Memory: the platform states 80 MB (`externalMemorySize`), what a game can use. On a Miyoo Mini with Onion, Linux has 85 MB available before the game starts (of 101 MB it reports); the rest is the game's code and screen buffers. deki-3d checks a model against it when the game is built, and says which model does not fit.
 
 Not set up: sound, battery reading, brightness, rumble.
