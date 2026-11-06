@@ -5,6 +5,10 @@ Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
 
 ## Unreleased
 
+### Changed
+- `miyoo_mini` provides `hosted` (an operating system starts the game as a
+  program), not `desktop-os`. Needs the editor release that names it so.
+
 ### Added
 - **The Miyoo Mini as a build target** (`miyoo_mini`, framework `miyoo`): the
   editor's Miyoo builder cross-compiles the game with the Arm GNU toolchain

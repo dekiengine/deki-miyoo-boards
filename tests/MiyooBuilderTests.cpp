@@ -155,7 +155,7 @@ TEST(MiyooBuilder, TheShippedPlatformIsTheMiyooBuildersAndValid)
 
 TEST(MiyooBuilder, TheFrameworkIdPicksItOverTheDesktopBuilder)
 {
-    // miyoo_mini provides desktop-os, as the simulator does; only the
+    // miyoo_mini provides hosted, as the simulator does; only the
     // framework decides, so the desktop builder never builds it.
     MiyooBuilder miyoo;
     StubBuilder native("native");
@@ -247,7 +247,7 @@ protected:
         fs::create_directories(p / "src");
         fs::create_directories(p / "assets");
         AddPackage("deki-miyoo-boards", "DEKI_PACKAGE_MIYOO", R"(["miyoo"])", R"(["deki-input"])");
-        AddPackage("deki-desktop-integration", "DEKI_PACKAGE_DESKTOP_HAL", R"(["desktop-os"])", "[]");
+        AddPackage("deki-desktop-integration", "DEKI_PACKAGE_DESKTOP_HAL", R"(["hosted"])", "[]");
         AddPackage("deki-sdl3-integration", "DEKI_PACKAGE_SDL3", R"(["sdl3"])", "[]");
         AddPackage("deki-esp32-integration", "DEKI_PACKAGE_ESP32_HAL", R"(["esp32"])", "[]");
     }
@@ -292,6 +292,8 @@ TEST_F(MiyooBuildFilesTest, OnlyThePlatformsPackagesAreCompiled)
     EXPECT_TRUE(Contains(cmake, "    DEKI_PACKAGE_MIYOO\n"));
     // The game's main() is the engine's, linked whatever packages it has.
     EXPECT_TRUE(Contains(cmake, "target_link_libraries(DekiGame PRIVATE deki-engine-hosted deki-engine-core"));
+    EXPECT_TRUE(Contains(cmake, "    DEKI_HOSTED\n"));
+    EXPECT_FALSE(Contains(cmake, "SIMULATOR"));
     EXPECT_TRUE(Contains(cmake, "\"DEKI_SCREEN_WIDTH=320\""));
     EXPECT_TRUE(Contains(cmake, "UNIT_PREFIX \"miyoo\""));
 }
