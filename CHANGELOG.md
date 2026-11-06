@@ -22,6 +22,9 @@ Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
   counts the frames shown for a frame-rate counter
   (`IDisplay::GetFramesShown`).
 - **The buttons** (`MiyooInputSetup`), MENU quitting the game.
+- It requires `deki-input` alone. The game's `main()`, memory and file system
+  are the engine's (`deki-engine-hosted`), as for any game run as a program;
+  `deki-desktop-integration` is not needed.
 - The platform's ARGB8888 screen and 64-pixel tiles for deki-3d's software
   rasteriser (`DEKI_3D_TILE_SIZE=64`).
 - Tests: the builder's toolchain file, CMake and Onion app, installing on fake

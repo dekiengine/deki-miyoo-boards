@@ -2,8 +2,9 @@
 // interface, so the editor can load the DLL and find its components.
 //
 // Display and input are set up by their SetupComponents; the Miyoo time
-// provider is registered in MiyooDisplay.cpp. The program entry (main) and the
-// memory and filesystem layers live in the deki-desktop-integration package.
+// provider is registered in MiyooDisplay.cpp. The program's entry (main), the
+// memory and the file system are the engine's (deki-engine-hosted), as for any
+// game that runs as a program.
 
 #include "MiyooPackage.h"
 #include <deki/interop/Plugin.h>

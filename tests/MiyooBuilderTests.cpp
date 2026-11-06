@@ -246,7 +246,7 @@ protected:
         Write(p / "deki-packages.json", R"({"packages":{}})");
         fs::create_directories(p / "src");
         fs::create_directories(p / "assets");
-        AddPackage("deki-miyoo-boards", "DEKI_PACKAGE_MIYOO", R"(["miyoo"])", R"(["deki-desktop-integration"])");
+        AddPackage("deki-miyoo-boards", "DEKI_PACKAGE_MIYOO", R"(["miyoo"])", R"(["deki-input"])");
         AddPackage("deki-desktop-integration", "DEKI_PACKAGE_DESKTOP_HAL", R"(["desktop-os"])", "[]");
         AddPackage("deki-sdl3-integration", "DEKI_PACKAGE_SDL3", R"(["sdl3"])", "[]");
         AddPackage("deki-esp32-integration", "DEKI_PACKAGE_ESP32_HAL", R"(["esp32"])", "[]");
@@ -282,12 +282,16 @@ TEST_F(MiyooBuildFilesTest, OnlyThePlatformsPackagesAreCompiled)
     // bring the Miyoo package in even though no define named it.
     const std::string cmake = Generate(MiyooMini(), { "DEKI_PACKAGE_SDL3", "DEKI_PACKAGE_ESP32_HAL" });
     EXPECT_TRUE(Contains(cmake, "\"${DEKI_PROJECT_ROOT}/packages/deki-miyoo-boards/package.cmake\""));
-    EXPECT_TRUE(Contains(cmake, "\"${DEKI_PROJECT_ROOT}/packages/deki-desktop-integration/package.cmake\""));
+    // The desktop package is installed but not built in: nothing the Miyoo
+    // needs is in it, the game's entry being the engine's.
+    EXPECT_FALSE(Contains(cmake, "deki-desktop-integration"));
     EXPECT_FALSE(Contains(cmake, "deki-sdl3-integration"));
     EXPECT_FALSE(Contains(cmake, "deki-esp32-integration"));
     EXPECT_FALSE(Contains(cmake, "packages/*/package.cmake"));
     EXPECT_FALSE(Contains(cmake, "SDL3::"));
     EXPECT_TRUE(Contains(cmake, "    DEKI_PACKAGE_MIYOO\n"));
+    // The game's main() is the engine's, linked whatever packages it has.
+    EXPECT_TRUE(Contains(cmake, "target_link_libraries(DekiGame PRIVATE deki-engine-hosted deki-engine-core"));
     EXPECT_TRUE(Contains(cmake, "\"DEKI_SCREEN_WIDTH=320\""));
     EXPECT_TRUE(Contains(cmake, "UNIT_PREFIX \"miyoo\""));
 }

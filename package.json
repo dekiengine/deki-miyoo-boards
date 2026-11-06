@@ -8,8 +8,7 @@
     "miyoo"
   ],
   "requires": [
-    "deki-input",
-    "deki-desktop-integration"
+    "deki-input"
   ],
   "features": [
     {
