@@ -570,3 +570,21 @@ TEST(OnionCards, ACancelledInstallLeavesTheOldAppAndNoStaging)
     EXPECT_EQ(Read(card / "App" / "G" / "DekiGame"), "old");
     EXPECT_FALSE(fs::exists(card / "App" / ".G.deki-install"));
 }
+
+// An install names its card as someone wrote it: the editor's tool, a script,
+// the Build panel. The same drive with or without its separator is the card.
+TEST(OnionCards, ACardIsTheSameWithOrWithoutATrailingSeparator)
+{
+#ifdef _WIN32
+    EXPECT_TRUE(NamesOnionCard("E:", "E:"));
+    EXPECT_TRUE(NamesOnionCard(R"(E:\)", "E:"));
+    EXPECT_TRUE(NamesOnionCard("e:/", "E:"));
+    EXPECT_FALSE(NamesOnionCard("F:", "E:"));
+    EXPECT_FALSE(NamesOnionCard(R"(E:\App)", "E:"));
+#else
+    EXPECT_TRUE(NamesOnionCard("/media/user/ONION/", "/media/user/ONION"));
+    EXPECT_FALSE(NamesOnionCard("/media/user/onion", "/media/user/ONION"));
+    EXPECT_FALSE(NamesOnionCard("/media/user/ONION/App", "/media/user/ONION"));
+#endif
+    EXPECT_FALSE(NamesOnionCard("", "E:"));
+}

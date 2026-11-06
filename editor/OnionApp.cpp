@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
+#include <cctype>
 #include <fstream>
 
 #ifdef _WIN32
@@ -188,6 +189,30 @@ fs::path OnionCardRoot(const std::string& deployTargetId)
     }
 #endif
     return fs::path(deployTargetId);
+}
+
+namespace
+{
+// A card's directory written one way: forward slashes, no trailing one, and
+// on Windows, where drive letters and paths ignore case, lower case.
+std::string CardKey(const std::string& id)
+{
+    std::string key = OnionCardRoot(id).lexically_normal().generic_string();
+    while (key.size() > 1 && key.back() == '/')
+    {
+        key.pop_back();
+    }
+#ifdef _WIN32
+    std::transform(key.begin(), key.end(), key.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+#endif
+    return key;
+}
+}  // namespace
+
+bool NamesOnionCard(const std::string& given, const std::string& cardId)
+{
+    return !given.empty() && CardKey(given) == CardKey(cardId);
 }
 
 std::vector<DeployTarget> FindOnionCards()

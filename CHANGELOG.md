@@ -5,6 +5,12 @@ Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
 
 ## Unreleased
 
+### Fixed
+- An install names its card as written: `E:`, `E:\` and `e:/` are the same
+  card (`NamesOnionCard`); only the exact `E:` was accepted. A drive that is
+  not an Onion card is still refused, and the message lists the cards that
+  are connected.
+
 ### Changed
 - `miyoo_mini` provides `hosted` (an operating system starts the game as a
   program), not `desktop-os`. Needs the editor release that names it so.

@@ -621,9 +621,28 @@ void MiyooBuilder::Deploy(const std::string& projectPath, const std::string& dep
             }
         }
     }
-    else if (std::none_of(cards.begin(), cards.end(), [&](const DeployTarget& c) { return c.id == cardId; }))
+    else
     {
-        problem = "'" + cardId + "' is not a connected Onion SD card (a removable drive with .tmp_update/ and App/).";
+        // As the card is listed, however it was written ("E:\" is "E:").
+        const auto card = std::find_if(cards.begin(), cards.end(),
+                                       [&](const DeployTarget& c) { return NamesOnionCard(cardId, c.id); });
+        if (card == cards.end())
+        {
+            problem =
+                "'" + cardId + "' is not a connected Onion SD card (a removable drive with .tmp_update/ and App/).";
+            if (!cards.empty())
+            {
+                problem += " Connected:";
+                for (const auto& c : cards)
+                {
+                    problem += " " + c.id;
+                }
+            }
+        }
+        else
+        {
+            cardId = card->id;
+        }
     }
 
     if (!problem.empty())

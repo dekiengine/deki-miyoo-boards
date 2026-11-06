@@ -73,6 +73,11 @@ std::vector<DeployTarget> FindOnionCards();
 /// The directory an Onion card's deploy target id names ("E:" is "E:\").
 std::filesystem::path OnionCardRoot(const std::string& deployTargetId);
 
+/// Whether `given`, a deploy target as someone wrote it, names the card whose
+/// id is `cardId`: the same drive or mount point, with or without a trailing
+/// separator ("E:", "E:\" and "e:/" are one drive on Windows).
+bool NamesOnionCard(const std::string& given, const std::string& cardId);
+
 /// Copies the app folder `app` to <cardRoot>/App/<folder>, replacing what is
 /// there when the editor made it. Copies into a temporary folder beside it
 /// first and checks every file against the original (size and SHA-256), so a
