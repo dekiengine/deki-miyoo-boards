@@ -1,0 +1,77 @@
+{
+  "formatVersion": 1,
+  "objects": [
+    {
+      "active": true,
+      "children": [
+        {
+          "active": true,
+          "children": [],
+          "components": [
+            {
+              "properties": {
+                "rotate180": true,
+                "scale": 0
+              },
+              "type": "DekiMiyoo::MiyooDisplaySetup"
+            }
+          ],
+          "id": 600,
+          "name": "Miyoo Display",
+          "transform": {
+            "rotation": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "x": 0.0,
+            "y": 0.0
+          }
+        },
+        {
+          "active": true,
+          "children": [],
+          "components": [
+            {
+              "properties": {},
+              "type": "DekiMiyoo::MiyooInputSetup"
+            }
+          ],
+          "id": 601,
+          "name": "Miyoo Input",
+          "transform": {
+            "rotation": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "x": 0.0,
+            "y": 0.0
+          }
+        }
+      ],
+      "components": [
+        {
+          "properties": {
+            "setupComponents": [
+              {
+                "id": 600,
+                "typeId": 3249224171
+              },
+              {
+                "id": 601,
+                "typeId": 2236537137
+              }
+            ]
+          },
+          "type": "Deki::PlatformSetupComponent"
+        }
+      ],
+      "id": 1,
+      "name": "Setup",
+      "transform": {
+        "rotation": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "x": 0.0,
+        "y": 0.0
+      }
+    }
+  ]
+}

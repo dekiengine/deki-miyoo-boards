@@ -1,0 +1,35 @@
+{
+  "id": "deki-miyoo-boards",
+  "displayName": "Miyoo Boards",
+  "description": "Build targets for Miyoo handhelds: Miyoo Mini",
+  "minEngine": "0.22.0",
+  "buildDefine": "DEKI_PACKAGE_MIYOO",
+  "platformRequires": [
+    "miyoo"
+  ],
+  "requires": [
+    "deki-input",
+    "deki-desktop-integration"
+  ],
+  "features": [
+    {
+      "id": "display",
+      "displayName": "Display",
+      "defaultEnabled": true,
+      "componentTypes": [
+        "MiyooDisplaySetup"
+      ]
+    },
+    {
+      "id": "input",
+      "displayName": "Input",
+      "defaultEnabled": true,
+      "componentTypes": [
+        "MiyooInputSetup"
+      ]
+    }
+  ],
+  "dependencies": {
+    "miyoo": []
+  }
+}

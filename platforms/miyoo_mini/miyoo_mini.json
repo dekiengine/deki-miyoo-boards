@@ -1,0 +1,35 @@
+{
+  "bootScene": "platforms/miyoo_mini/boot.scene",
+  "colorFormat": "ARGB8888",
+  "cxxFlags": [
+    "-O3"
+  ],
+  "defines": [
+    "DEKI_3D_TILE_SIZE=64"
+  ],
+  "displayName": "Miyoo Mini (Onion OS)",
+  "family": "linux-arm",
+  "framework": "miyoo",
+  "frameworkOptions": {
+    "cpuFlags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard",
+    "static": true,
+    "toolchainPrefix": "arm-none-linux-gnueabihf-"
+  },
+  "id": "miyoo_mini",
+  "linkFlags": [
+    "-s"
+  ],
+  "provides": [
+    "desktop-os",
+    "posix-process",
+    "filesystem",
+    "threads",
+    "miyoo"
+  ],
+  "requiresPackages": [
+    "deki-miyoo-boards"
+  ],
+  "screenDiagonalInches": 2.8,
+  "screenHeight": 240,
+  "screenWidth": 320
+}
