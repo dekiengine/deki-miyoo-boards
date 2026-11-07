@@ -2,7 +2,7 @@
   "id": "deki-miyoo-boards",
   "displayName": "Miyoo Boards",
   "description": "Build targets for Miyoo handhelds: Miyoo Mini",
-  "minEngine": "0.22.0",
+  "minEngine": "0.30.0",
   "buildDefine": "DEKI_PACKAGE_MIYOO",
   "platformRequires": [
     "miyoo"

@@ -3,7 +3,7 @@
 Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
 [engine changelog](https://github.com/dekiengine/deki-engine/blob/master/CHANGELOG.md).
 
-## Unreleased
+## 0.30.0
 
 ### Renamed projects, and the Miyoo Mini's memory
 - An app's `.deki-app` names its project (a hash of the project's folder, not
@@ -34,6 +34,7 @@ Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
   are connected.
 
 ### Changed
+- `minEngine` 0.30.0: the first release, built against engine 0.30.0.
 - `miyoo_mini` provides `hosted` (an operating system starts the game as a
   program), not `desktop-os`. Needs the editor release that names it so.
 
