@@ -1,0 +1,211 @@
+<!-- HTML header for doxygen 1.18.0 - Deki.
+     Doxygen's own template plus the site's webfonts and the dekiengine.com
+     bar. The $-placeholders and the BEGIN/END comment markers are Doxygen's
+     template language, not commentary. See README.md in this directory. -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.18.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>deki-miyoo-boards: deki-miyoo-boards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="deki.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="deki-bar">
+  <a class="deki-brand" href="https://dekiengine.com/zh/">
+    <span class="deki-mark"><span class="deki-dot"></span></span>
+    <span class="deki-brand-name">DEKI<span class="deki-slash">/</span>ENGINE</span>
+  </a>
+  <span class="deki-bar-tag">文档</span>
+  <div class="deki-bar-links">
+    <a href="https://dekiengine.com/zh/"><span class="deki-nav-label">网站</span></a>
+    <a href="https://dekiengine.com/zh/packages/"><span class="deki-nav-label">包</span></a>
+    <a href="https://dekiengine.com/zh/blog/"><span class="deki-nav-label">博客</span></a>
+    <span class="deki-bar-sep"></span>
+    <a class="deki-chip" href="https://github.com/orgs/dekiengine/repositories" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span>github</span></a>
+    <a class="deki-chip deki-chip-accent" href="https://dekiengine.com/zh/discord/" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg><span>discord</span></a>
+    <a class="deki-chip deki-chip-solid" href="https://dekiengine.com/zh/donate/"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5 3.9 12.4a4.8 4.8 0 0 1 0-6.8 4.8 4.8 0 0 1 6.8 0l1.3 1.3 1.3-1.3a4.8 4.8 0 0 1 6.8 0 4.8 4.8 0 0 1 0 6.8Z"/></svg><span>捐赠</span></a>
+    <details class="deki-lang"><summary aria-label="语言: 简体中文"><span class="deki-nav-label">简体中文</span></summary><div class="deki-lang-menu"><a href="../index.html" data-deki-root="../" hreflang="en" lang="en">English</a><a href="../ja/index.html" data-deki-root="../ja/" hreflang="ja" lang="ja">日本語</a><a href="../zh/index.html" data-deki-root="../zh/" hreflang="zh" lang="zh" aria-current="true">简体中文</a><a href="../ko/index.html" data-deki-root="../ko/" hreflang="ko" lang="ko">한국어</a></div></details>
+    <script>(function () {
+      var page = location.pathname.split('/').pop() || 'index.html';
+      if (!/^(index|pages|engine-core|settings|guide-[a-z0-9-]+)\.html$/.test(page)) return;
+      document.querySelectorAll('[data-deki-root]').forEach(function (a) {
+        a.href = a.getAttribute('data-deki-root') + page + location.hash;
+      });
+    })();</script>
+  </div>
+</div>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">deki-miyoo-boards<span id="projectnumber">&#160;0.30.3</span>
+   </div>
+   <div id="projectbrief">Deki 包参考</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.18.0 -->
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="application/json" id="doxygen-config">
+{
+  "relPath": "",
+  "generateTreeView": true,
+  "searchEngine": false,
+  "serverBasedSearch": false,
+  "disableIndex": false,
+  "dynamicMenus": true,
+  "fullSidebar": false
+}
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<div id="main-nav-mobile">
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2">
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('index.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<div><div class="header">
+  <div class="headertitle"><div class="title">deki-miyoo-boards </div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="mainpage"></a></p>
+<p>将 Miyoo Mini 作为构建目标。在构建面板中选择它：Build 生成用于 Miyoo 菜单的应用，Install 将其放到掌机的 SD 卡上，无论是原厂固件还是 Onion OS，应用都会出现在 Apps 中。</p>
+<p>仓库：<a href="https://github.com/dekiengine/deki-miyoo-boards">github.com/dekiengine/deki-miyoo-boards</a> · 最新版本：0.30.0 · 需要引擎 0.30.0 或更高版本 · 依赖：<a href="https://dekiengine.github.io/deki-input/zh/">deki-input</a></p>
+<p>使用 <span class="tt">DekiEditor --packages-add deki-miyoo-boards &lt;project&gt;</span> 或通过包管理器安装。引擎自身的组件和 C++ API 见 <a href="https://dekiengine.github.io/docs/zh/">Deki 文档</a>。</p>
+<p>在编辑器中显示为 **Miyoo Boards**。</p>
+<h1 class="doxsection"><a class="anchor" id="components"></a>
+组件</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">组件  </th><th class="markdownTableHeadNone">类别  </th><th class="markdownTableHeadNone">说明  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="#c-miyoodisplaysetup" title="MiyooDisplaySetup">MiyooDisplaySetup</a>  </td><td class="markdownTableBodyNone">Miyoo  </td><td class="markdownTableBodyNone">在 Miyoo 掌机的屏幕上显示游戏。  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="#c-miyooinputsetup" title="MiyooInputSetup">MiyooInputSetup</a>  </td><td class="markdownTableBodyNone">Miyoo  </td><td class="markdownTableBodyNone">把 Miyoo 掌机的按键作为按键输入交给引擎。  </td></tr>
+</table>
+<h1 class="doxsection"><a class="anchor" id="feature-flags"></a>
+功能开关</h1>
+<p>可以从构建中去掉的部分。带有 define 的功能通过该 define 开关，其余的随其组件一起被剥离。</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">功能  </th><th class="markdownTableHeadNone">define  </th><th class="markdownTableHeadNone">默认值  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Display  </td><td class="markdownTableBodyNone">&mdash;  </td><td class="markdownTableBodyNone">开  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Input  </td><td class="markdownTableBodyNone">&mdash;  </td><td class="markdownTableBodyNone">开  </td></tr>
+</table>
+<h1 class="doxsection"><a class="anchor" id="component-reference"></a>
+组件参考</h1>
+<h2 class="doxsection"><a class="anchor" id="c-miyoodisplaysetup"></a>
+MiyooDisplaySetup</h2>
+<p>在 Miyoo 掌机的屏幕上显示游戏。</p>
+<p>检视器中的名称：Miyoo 显示设置 · 类别：Miyoo · 类型：<span class="tt">DekiMiyoo::MiyooDisplaySetup</span></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">属性  </th><th class="markdownTableHeadNone">类型  </th><th class="markdownTableHeadNone">默认值  </th><th class="markdownTableHeadNone">约束  </th><th class="markdownTableHeadNone">说明  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><span class="tt">scale</span>  </td><td class="markdownTableBodyNone">int32  </td><td class="markdownTableBodyNone"><span class="tt">0</span>  </td><td class="markdownTableBodyNone">0 到 8  </td><td class="markdownTableBodyNone">每个屏幕像素对应的面板像素数。0 则放大到能容纳的最大尺寸。  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">rotate180</span>  </td><td class="markdownTableBodyNone">bool  </td><td class="markdownTableBodyNone"><span class="tt">true</span>  </td><td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">把帧旋转 180 度。Miyoo Mini 的面板是倒装的。  </td></tr>
+</table>
+<h2 class="doxsection"><a class="anchor" id="c-miyooinputsetup"></a>
+MiyooInputSetup</h2>
+<p>把 Miyoo 掌机的按键作为按键输入交给引擎。</p>
+<p>检视器中的名称：Miyoo 输入设置 · 类别：Miyoo · 类型：<span class="tt">DekiMiyoo::MiyooInputSetup</span></p>
+<p>没有反射的属性。</p>
+<h1 class="doxsection"><a class="anchor" id="changelog"></a>
+更新日志</h1>
+<p>更新日志为英文。</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md0"></a>
+0.30.0</h2>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md1"></a>
+Renamed projects, and the Miyoo Mini's memory</h2>
+<ul>
+<li>An app's <span class="tt">.deki-app</span> names its project (a hash of the project's folder, not the folder itself). After a project is renamed, an install says which app on the card is the same project under its earlier name and leaves it there, since it may hold the game's saves (<span class="tt">EarlierAppsOfProject</span>).</li>
+<li><span class="tt">miyoo_mini</span> states 80 MB of memory (<span class="tt">externalMemorySize</span>), so deki-3d checks a model against it as on a board: measured on a Miyoo Mini with Onion, Linux has 85 MB available before the game starts, and the rest is the game's code and screen buffers. It also grants packages <span class="tt">memory:external</span>, which the hosted memory serves from the same heap.</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md2"></a>
+Stock firmware cards too</h2>
+<ul>
+<li>An install takes any Miyoo SD card, with Onion or the stock firmware: a removable drive with <span class="tt">App/</span> and <span class="tt">Emu/</span> at its top, as MainUI lays them out on both. It used to need Onion's <span class="tt">.tmp_update/</span>. The card list says which system each card has ("Miyoo SD card (E:, Onion)"). Tested on Onion only.</li>
+<li>The target is called <b>Miyoo Mini</b>, not "Miyoo Mini (Onion OS)", and the code names follow what the app is: a MainUI app (<span class="tt">MainUiApp.h</span>, was <span class="tt">OnionApp.h</span>; <span class="tt">resources/mainui/</span>), on a Miyoo card (<span class="tt">FindMiyooCards</span>, <span class="tt">IsMiyooCard</span>, <span class="tt">NamesMiyooCard</span>).</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md3"></a>
+Fixed</h2>
+<ul>
+<li>An install names its card as written: <span class="tt">E:</span>, <span class="tt">E:\</span> and <span class="tt">e:/</span> are the same card (<span class="tt">NamesMiyooCard</span>); only the exact <span class="tt">E:</span> was accepted. A drive that is not a Miyoo card is still refused, and the message lists the cards that are connected.</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
+Changed</h2>
+<ul>
+<li><span class="tt">minEngine</span> 0.30.0: the first release, built against engine 0.30.0.</li>
+<li><span class="tt">miyoo_mini</span> provides <span class="tt">hosted</span> (an operating system starts the game as a program), not <span class="tt">desktop-os</span>. Needs the editor release that names it so.</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
+Added</h2>
+<ul>
+<li><b>The Miyoo Mini as a build target</b> (<span class="tt">miyoo_mini</span>, framework <span class="tt">miyoo</span>): the editor's Miyoo builder cross-compiles the game with the Arm GNU toolchain it installs (a toolchain component), packs a MainUI app (<span class="tt">App/&lt;Folder&gt;/</span> with <span class="tt">config.json</span>, <span class="tt">launch.sh</span>, the icon and the game's data), and installs it on the Miyoo's SD card, each file read back and checked.</li>
+<li><b>The display</b> (<span class="tt">MiyooDisplaySetup</span>): <span class="tt">/dev/fb0</span> at the panel's ARGB8888, the game's 320x240 scaled by whole pixels and turned 180 degrees, flipped between pages in step with the panel's refresh, which it measures at start. Frames are presented on their own thread: the game draws into three buffers the display lends it, so a frame is handed over without a copy, and each row is widened straight into the panel's next page, with NEON for ARGB8888 at 1x and 2x. It holds each frame as many refreshes as the game's frame rate asks, says when a frame stays up longer than the rest (a visible hitch), and counts the frames shown for a frame-rate counter (<span class="tt">IDisplay::GetFramesShown</span>).</li>
+<li><b>The buttons</b> (<span class="tt">MiyooInputSetup</span>), MENU quitting the game.</li>
+<li>It requires <span class="tt">deki-input</span> alone. The game's <span class="tt">main()</span>, memory and file system are the engine's (<span class="tt">deki-engine-hosted</span>), as for any game run as a program; <span class="tt">deki-desktop-integration</span> is not needed.</li>
+<li>The platform's ARGB8888 screen and 64-pixel tiles for deki-3d's software rasteriser (<span class="tt">DEKI_3D_TILE_SIZE=64</span>).</li>
+<li>Tests: the builder's toolchain file, CMake and MainUI app, installing on fake SD cards, and the row widening, whose NEON path they hold to the plain one pixel for pixel when built for the Miyoo.</li>
+</ul>
+<p>更早的版本：<a href="https://github.com/dekiengine/deki-miyoo-boards/blob/master/CHANGELOG.md">CHANGELOG.md</a></p>
+<hr  />
+<p>由包的反射数据生成（引擎 0.30.3）。属性名就是场景文件中使用的键。重命名后会保留别名（<a href="https://github.com/dekiengine/deki-editor/blob/master/COMPATIBILITY.md">兼容性</a>）。 </p>
+</div></div><!-- PageDoc -->
+<a href="doxygen_crawl.html"></a>
+</div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.18.0 </li>
+  </ul>
+</div>
+</body>
+</html>
