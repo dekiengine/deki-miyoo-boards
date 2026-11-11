@@ -123,9 +123,10 @@ bool MiyooDisplay::Initialize(int32_t width, int32_t height)
 
     DEKI_LOG_INFO("MiyooDisplay: panel %dx%d, %d page(s); screen %dx%d, drawn in %d buffers lent to the game "
                   "and presented on its own thread",
-                  (int)m_PanelWidth, (int)m_PanelHeight, (int)m_Pages, (int)width, (int)height, kFrames);
+                  static_cast<int>(m_PanelWidth), static_cast<int>(m_PanelHeight), static_cast<int>(m_Pages),
+                  static_cast<int>(width), static_cast<int>(height), kFrames);
     const int32_t scale = m_Scale > 0 ? m_Scale : std::max<int32_t>(1, std::min(m_PanelWidth / width, m_PanelHeight / height));
-    DEKI_LOG_INFO("MiyooDisplay: rows widened %dx with %s", (int)scale,
+    DEKI_LOG_INFO("MiyooDisplay: rows widened %dx with %s", static_cast<int>(scale),
                   WidensWithNeon(m_Format, scale) ? "NEON" : "plain C++ (NEON covers ARGB8888 at 1x and 2x)");
     return true;
 }

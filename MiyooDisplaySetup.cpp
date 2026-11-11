@@ -22,8 +22,8 @@ static std::unique_ptr<MiyooDisplay> s_MiyooDisplay;
 
 void MiyooDisplaySetup::Setup(SetupCallback onComplete)
 {
-    DEKI_LOG_INFO("MiyooDisplaySetup: Opening the framebuffer (%dx%d screen, scale %d)", (int)DEKI_SCREEN_WIDTH,
-                  (int)DEKI_SCREEN_HEIGHT, (int)scale);
+    DEKI_LOG_INFO("MiyooDisplaySetup: Opening the framebuffer (%dx%d screen, scale %d)",
+                  static_cast<int>(DEKI_SCREEN_WIDTH), static_cast<int>(DEKI_SCREEN_HEIGHT), static_cast<int>(scale));
 
     s_MiyooDisplay = std::make_unique<MiyooDisplay>();
     s_MiyooDisplay->SetScale(scale);
