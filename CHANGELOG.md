@@ -3,6 +3,12 @@
 Notable changes to `deki-miyoo-boards`. Engine and editor changes are in the
 [engine changelog](https://github.com/dekiengine/deki-engine/blob/master/CHANGELOG.md).
 
+## 0.40.0
+
+### Changed
+- `minEngine` 0.40.0: built against engine 0.40.0. A build of this package
+  from before does not load and is rebuilt.
+
 ## 0.30.0
 
 ### Renamed projects, and the Miyoo Mini's memory
