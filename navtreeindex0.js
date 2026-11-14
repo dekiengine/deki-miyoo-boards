@@ -7,6 +7,8 @@ var NAVTREEINDEX0 =
 "index.html#autotoc_md3":[3,3],
 "index.html#autotoc_md4":[3,4],
 "index.html#autotoc_md5":[3,5],
+"index.html#autotoc_md6":[3,6],
+"index.html#autotoc_md7":[3,7],
 "index.html#c-miyoodisplaysetup":[2,0],
 "index.html#c-miyooinputsetup":[2,1],
 "index.html#changelog":[3],
